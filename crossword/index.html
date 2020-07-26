@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Cross word Puzzel</title>
+  <style>
+    body {
+      padding: 0;
+      margin: auto;
+      margin-top: 30px;
+      display: flex;
+      width: 100vw;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #cross {
+      text-align: center;
+      width: 30%;
+      height: 30%;
+      margin: 0;
+      padding: 0;
+      border-collapse: collapse;
+      border: 1px solid white;
+    }
+
+    #buttons {
+      width: 30%;
+      float: left;
+    }
+
+    tr {
+      margin: 0;
+      padding: 0;
+      border-collapse: collapse;
+    }
+
+    td {
+      height: 30%;
+      width: 30%;
+    }
+
+    #leftBox {
+      float: left;
+    }
+
+    #rightBox {
+      float: left;
+      clear: left;
+      margin-left: 106px;
+    }
+
+    .butt {
+      height: 50px;
+      width: 107px;
+      color: gainsboro;
+      background-color: green;
+    }
+
+    .space {
+      align-items: center;
+    }
+
+    #puzzel {
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      border-collapse: collapse;
+      border: 1px solid black;
+    }
+
+    .inputBox {
+      width: 4vh;
+      height: 4vh;
+      border: 1px solid black;
+      text-align: center;
+    }
+
+    #hintsTable {
+      width: 700px;
+      float: left;
+      clear: left;
+      margin-left: 53px;
+      margin-top: 12px;
+    }
+
+    .container {
+      margin: 100px;
+    }
+  </style>
+
+  <script>
+    //Globals
+    var currentTextInput;
+    var puzzelArrayData;
+    //Loads the Crossword
+    function initializeScreen() {
+      var puzzelTable = document.getElementById("puzzel");
+      puzzelArrayData = preparePuzzelArray();
+      for (var i = 0; i < puzzelArrayData.length; i++) {
+        var row = puzzelTable.insertRow(-1);
+        var rowData = puzzelArrayData[i];
+        for (var j = 0; j < rowData.length; j++) {
+          var cell = row.insertCell(-1);
+          if (rowData[j] != 0) {
+            var txtID = String('txt' + '_' + i + '_' + j);
+            cell.innerHTML = '<input type="text" class="inputBox" maxlength="1" style="text-transform: lowercase" ' + 'id="' + txtID + '" onfocus="textInputFocus(' + "'" + txtID + "'" + ')">';
+          } else {
+            cell.style.backgroundColor = "black";
+          }
+        }
+      }
+      addHint();
+    }
+    //Adds the hint numbers
+    function addHint() {
+      document.getElementById("txt_0_2").placeholder = "1";
+      document.getElementById("txt_2_6").placeholder = "2";
+      document.getElementById("txt_2_4").placeholder = "3";
+      document.getElementById("txt_6_1").placeholder = "4";
+      document.getElementById("txt_1_9").placeholder = "5";
+      document.getElementById("txt_4_6").placeholder = "6";
+      document.getElementById("txt_2_11").placeholder = "7";
+      document.getElementById("txt_8_0").placeholder = "8";
+      document.getElementById("txt_11_2").placeholder = "9";
+    }
+    //Stores ID of the selected cell into currentTextInput
+    function textInputFocus(txtID123) {
+      currentTextInput = txtID123;
+    }
+    //Returns Array
+    function preparePuzzelArray() {
+      var items = [
+        [0, 0, 'i', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 'r', 0, 0, 0, 0, 0, 0, 'c', 0, 0, 0, 0, 0, 0],
+        [0, 0, 'o', 0, 'd', 0, 'q', 'u', 't', 'u', 'b', 'm', 'i', 'n', 'a', 'r'],
+        [0, 0, 'n', 0, 'e', 0, 0, 0, 0, 'p', 0, 'u', 0, 0, 0, 0],
+        [0, 0, 'p', 0, 'l', 0, 'a', 0, 0, 'o', 0, 'g', 0, 0, 0, 0],
+        [0, 0, 'i', 0, 'h', 0, 'l', 0, 0, 'l', 0, 'h', 0, 0, 0, 0],
+        [0, 'a', 'l', 'a', 'i', 'd', 'a', 'r', 'w', 'a', 'z', 'a', 0, 0, 0, 0],
+        [0, 0, 'l', 0, 0, 0, 'i', 0, 0, 0, 0, 'l', 0, 0, 0, 0],
+        ['i', 'm', 'a', 'm', 'z', 'a', 'm', 'i', 'n', 't', 'o', 'm', 'b', 0, 0, 0],
+        [0, 0, 'r', 0, 0, 0, 'i', 0, 0, 0, 0, 'o', 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 'n', 0, 0, 0, 0, 's', 0, 0, 0, 0],
+        [0, 0, 'm', 'e', 'h', 'r', 'a', 'u', 'l', 'i', 0, 'q', 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 'r', 0, 0, 0, 0, 'u', 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'e', 0, 0, 0, 0]
+      ];
+      return items;
+    }
+    //Clear All Button
+    function clearAllClicked() {
+      currentTextInput = '';
+      var puzzelTable = document.getElementById("puzzel");
+      puzzelTable.innerHTML = '';
+      initializeScreen();
+    }
+    //Check button
+    function checkClicked() {
+      for (var i = 0; i < puzzelArrayData.length; i++) {
+        var rowData = puzzelArrayData[i];
+        for (var j = 0; j < rowData.length; j++) {
+          if (rowData[j] != 0) {
+            var selectedInputTextElement = document.getElementById('txt' + '_' + i + '_' + j);
+            if ((selectedInputTextElement.value != puzzelArrayData[i][j]) || (selectedInputTextElement.value != puzzelArrayData[i][j].toLowerCase())) {
+              selectedInputTextElement.style.backgroundColor = 'red';
+            } else {
+              selectedInputTextElement.style.backgroundColor = 'white';
+            }
+          }
+        }
+      }
+    }
+    //Clue Button
+    function clueClicked() {
+      if (currentTextInput != null) {
+        var temp1 = currentTextInput;
+        var token = temp1.split("_");
+        var row = token[1];
+        var column = token[2];
+        document.getElementById(temp1).value = puzzelArrayData[row][column];
+        //checkClicked();
+      }
+    }
+    //Solve Button
+    function solveClicked() {
+      if (currentTextInput != null) {
+        var temp1 = currentTextInput;
+        var token = temp1.split("_");
+        var row = token[1];
+        var column = token[2];
+
+        // Print elements on top
+        for (j = row; j >= 0; j--) {
+          if (puzzelArrayData[j][column] != 0) {
+            document.getElementById('txt' + '_' + j + '_' + column).value = puzzelArrayData[j][column];
+          } else break;
+        }
+        // Print elements on right
+        for (i = column; i < puzzelArrayData[row].length; i++) {
+          if (puzzelArrayData[row][i] != 0) {
+            document.getElementById('txt' + '_' + row + '_' + i).value = puzzelArrayData[row][i];
+          } else break;
+        }
+
+        // Print elements below
+        for (m = row; m < puzzelArrayData.length; m++) {
+          if (puzzelArrayData[m][column] != 0) {
+            document.getElementById('txt' + '_' + m + '_' + column).value = puzzelArrayData[m][column];
+          } else break;
+        }
+        // Print elements on left
+        for (k = column; k >= 0; k--) {
+          if (puzzelArrayData[row][k] != 0) {
+            document.getElementById('txt' + '_' + row + '_' + k).value = puzzelArrayData[row][k];
+          } else break;
+        }
+        // Done!
+
+      }
+    }
+  </script>
+</head>
+
+<body onload="initializeScreen()">
+  <div class="container">
+    <div id="leftBox">
+      <table id="puzzel">
+
+      </table>
+    </div>
+    <div id="rightBox">
+      <table>
+        <tr>
+          <td class="space"><input class="butt" type="submit" value="Clear All" onclick="clearAllClicked()"></td>
+          <td class="space"><input class="butt" type="submit" value="Check" onclick="checkClicked()"></td>
+          <td class="space"><input class="butt" type="submit" value="Solve" onclick="solveClicked()"></td>
+          <td class="space"><input class="butt" type="submit" value="Clue" onclick="clueClicked()"></td>
+        </tr>
+      </table>
+    </div>
+    <!-- <table id="hintsTable">
+        <tr>
+          <td><strong>Across:</strong></td>
+          <td><strong>down:</strong></td>
+        </tr>
+        <tr>
+          <td>2. The tallest brick minaret in the world</td>
+          <td>1. Pillar made in the memory of Samrat Chandragupta. it is made of 98 percent of wrought iron and has served 1600 years without rusting</td>
+        </tr>
+        <tr>
+          <td>4. Which is the main gate from the southern side of the Quwwat-ul-Islam Mosque in the Qutub Minar complex</td>
+          <td>3. India’s capital territory</td>
+        </tr>
+        <tr>
+          <td>8. this is a small sandstone structure on an octagonal base which was constructed by Imam Zamin and he was buried there after his death in 1538</td>
+          <td>6. unfinished tower in the Qutub Complex, construction of which was started by Alauddin Khilji</td>
+        </tr>
+        <tr>
+          <td>9. It is a neighbourhood in the South district of Delhi in India. It represents a constituency in the legislative assembly of Delhi.</td>
+          <td>5. it was taken down in 1848, under instructions from The Viscount Hardinge, then Governor General of India. It was reinstalled at ground level to the east of Qutb Minar, where it remains. It is known as "Smith's Folly"</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>7. commonly known as the Jama Masjid of Delhi, is one of the largest mosques in India. It was built by the Mughal Emperor Shah Jahan between 1650 and 1656</td>
+        </tr>
+      </table> -->
+  </div>
+</body>
+
+</html>
