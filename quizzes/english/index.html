@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- change style according to your need -->
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            font-family: Gotham Rounded;
+        }
+
+        :root {
+            --hue-neutral: 200;
+            --hue-wrong: 0;
+            --hue-correct: 145;
+        }
+
+        body {
+            --hue: var(--hue-neutral);
+            padding: 0;
+            margin: 0;
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            background-color: hsl(var(--hue), 100%, 20%);
+        }
+
+        body.correct {
+            --hue: var(--hue-correct);
+        }
+
+        body.wrong {
+            --hue: var(--hue-wrong);
+        }
+
+        .container {
+            width: 800px;
+            max-width: 80%;
+            background-color: white;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 0 10px 2px;
+        }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(2, auto);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .btn {
+            --hue: var(--hue-neutral);
+            border: 1px solid hsl(var(--hue), 100%, 30%);
+            background-color: hsl(var(--hue), 100%, 50%);
+            border-radius: 5px;
+            padding: 5px 10px;
+            color: white;
+            outline: none;
+        }
+
+        .btn:hover {
+            border-color: blue;
+        }
+
+        .btn.correct {
+            --hue: var(--hue-correct);
+            color: green;
+        }
+
+        .btn.wrong {
+            --hue: var(--hue-wrong);
+        }
+
+        .start-btn,
+        .next-btn {
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 10px 20px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hide {
+            display: none;
+        }
+    </style>
+    <title>Quiz App</title>
+</head>
+
+<body>
+    <div class="container">
+        <div id="question-container" class="hide">
+            <div id="question">Question</div>
+            <div id="answer-buttons" class="btn-grid">
+                <button class="btn">Answer 1</button>
+                <button class="btn">Answer 2</button>
+                <button class="btn">Answer 3</button>
+                <button class="btn">Answer 4</button>
+            </div>
+        </div>
+        <div class="controls">
+            <button id="start-btn" class="start-btn btn">Start</button>
+            <button id="next-btn" class="next-btn btn hide">Next</button>
+        </div>
+    </div>
+    <script>
+        const startButton = document.getElementById('start-btn')
+        const nextButton = document.getElementById('next-btn')
+        const questionContainerElement = document.getElementById('question-container')
+        const questionElement = document.getElementById('question')
+        const answerButtonsElement = document.getElementById('answer-buttons')
+
+        let shuffledQuestions, currentQuestionIndex
+
+        startButton.addEventListener('click', startGame)
+        nextButton.addEventListener('click', () => {
+            currentQuestionIndex++
+            setNextQuestion()
+        })
+
+        function startGame() {
+            startButton.classList.add('hide')
+            shuffledQuestions = questions.sort(() => Math.random() - .5)
+            currentQuestionIndex = 0
+            questionContainerElement.classList.remove('hide')
+            setNextQuestion()
+        }
+
+        function setNextQuestion() {
+            resetState()
+            showQuestion(shuffledQuestions[currentQuestionIndex])
+        }
+
+        function showQuestion(question) {
+            questionElement.innerText = question.question
+            question.answers.forEach(answer => {
+                const button = document.createElement('button')
+                button.innerText = answer.text
+                button.classList.add('btn')
+                if (answer.correct) {
+                    button.dataset.correct = answer.correct
+                }
+                button.addEventListener('click', selectAnswer)
+                answerButtonsElement.appendChild(button)
+            })
+        }
+
+        function resetState() {
+            clearStatusClass(document.body)
+            nextButton.classList.add('hide')
+            while (answerButtonsElement.firstChild) {
+                answerButtonsElement.removeChild(answerButtonsElement.firstChild)
+            }
+        }
+
+        function selectAnswer(e) {
+            const selectedButton = e.target
+            const correct = selectedButton.dataset.correct
+            setStatusClass(document.body, correct)
+            Array.from(answerButtonsElement.children).forEach(button => {
+                setStatusClass(button, button.dataset.correct)
+            })
+            if (shuffledQuestions.length > currentQuestionIndex + 1) {
+                nextButton.classList.remove('hide')
+            } else {
+                startButton.innerText = 'Restart'
+                startButton.classList.remove('hide')
+            }
+        }
+
+        function setStatusClass(element, correct) {
+            clearStatusClass(element)
+            if (correct) {
+                element.classList.add('correct')
+            } else {
+                element.classList.add('wrong')
+            }
+        }
+
+        function clearStatusClass(element) {
+            element.classList.remove('correct')
+            element.classList.remove('wrong')
+        }
+
+        // add your questions here marking correct ans as true and wrong ans as false
+        // questions as question: your text
+        // and answers as answers: [you are smart enough to check below]
+        const questions = [
+            {
+                question: 'Who is the writer of the story "Who did Patrics Homework"?',
+                answers: [
+                    { text: 'AR Williams', correct: false },
+                    { text: 'Ruskin Bond', correct: false },
+                    { text: 'Lorraine M Halli', correct: false },
+                    { text: 'Carol Moore', correct: true }
+                ]
+            },
+            {
+                question: 'Patrick was a boy who loves to do homework.',
+                answers: [
+                    { text: 'True', correct: false },
+                    { text: 'False', correct: true }
+                ]
+            },
+            {
+                question: 'Which of the following games Patrick used to play?',
+                answers: [
+                    { text: 'Nintendo', correct: false },
+                    { text: 'Cricket', correct: false },
+                    { text: 'Basketball', correct: false },
+                    { text: 'Both A and C', correct: true }
+                ]
+            },
+            {
+                question: 'Patrick’s cat was playing with.',
+                answers: [
+                    { text: 'Doll', correct: false },
+                    { text: 'Stick', correct: false },
+                    { text: 'Elf', correct: true },
+                    { text: 'Ball', correct: false }
+                ]
+            },
+            {
+                question: 'What promise Patrick took from the tiny man?',
+                answers: [
+                    { text: 'He will play with him', correct: false },
+                    { text: 'He will do all his homework', correct: true },
+                    { text: 'He will give him a gift', correct: false },
+                    { text: 'None of the above', correct: false }
+                ]
+            },
+            {
+                question: 'The Elf completed all his homework without any help.',
+                answers: [
+                    { text: 'True', correct: false },
+                    { text: 'False', correct: true }
+                ]
+            },
+            {
+                question: 'Why Elf needed Patrick for his math homework?',
+                answers: [
+                    { text: 'Because Elf was tired', correct: false },
+                    { text: 'Because he was new to math', correct: true },
+                    { text: 'He don’t wanted to do', correct: false },
+                    { text: 'All of the above', correct: false }
+                ]
+            },
+            {
+                question: 'What happened at the end?',
+                answers: [
+                    { text: 'Patrick got A’s', correct: false },
+                    { text: 'His teachers were praising him', correct: false },
+                    { text: 'He became a model kid', correct: false },
+                    { text: 'All of the above', correct: true }
+                ]
+            },
+            {
+                question: 'What was Patrick thinking?',
+                answers: [
+                    { text: 'He has done all his homework', correct: false },
+                    { text: 'Elf has done all his homework', correct: true },
+                    { text: 'Neither Elf nor he has done his homework', correct: false },
+                    { text: 'None', correct: false }
+                ]
+            },
+            {
+                question: 'What is secret of the story?',
+                answers: [
+                    { text: 'Patrick did his homework himself', correct: true },
+                    { text: 'Patrick has a cat', correct: false },
+                    { text: 'Both A and B', correct: false },
+                    { text: 'Not A neither B', correct: false }
+                ]
+            },
+        ]
+    </script>
+</body>
+
+</html>
