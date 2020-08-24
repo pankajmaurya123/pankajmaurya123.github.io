@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- change style according to your need -->
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            font-family: Gotham Rounded;
+        }
+
+        :root {
+            --hue-neutral: 200;
+            --hue-wrong: 0;
+            --hue-correct: 145;
+        }
+
+        body {
+            --hue: var(--hue-neutral);
+            padding: 0;
+            margin: 0;
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            background-color: hsl(var(--hue), 100%, 20%);
+        }
+
+        body.correct {
+            --hue: var(--hue-correct);
+        }
+
+        body.wrong {
+            --hue: var(--hue-wrong);
+        }
+
+        .container {
+            width: 800px;
+            max-width: 80%;
+            background-color: white;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 0 10px 2px;
+        }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(2, auto);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .btn {
+            --hue: var(--hue-neutral);
+            border: 1px solid hsl(var(--hue), 100%, 30%);
+            background-color: hsl(var(--hue), 100%, 50%);
+            border-radius: 5px;
+            padding: 5px 10px;
+            color: white;
+            outline: none;
+        }
+
+        .btn:hover {
+            border-color: rgb(61, 136, 221);
+        }
+
+        .btn.correct {
+            --hue: var(--hue-correct);
+            color: rgb(7, 163, 7);
+        }
+
+        .btn.wrong {
+            --hue: var(--hue-wrong);
+        }
+
+        .start-btn,
+        .next-btn {
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 10px 20px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hide {
+            display: none;
+        }
+    </style>
+    <title>Quiz</title>
+</head>
+
+<body>
+    <div class="container">
+        <div id="question-container" class="hide">
+            <div id="question">Question</div>
+            <div id="answer-buttons" class="btn-grid">
+                <button class="btn">Answer 1</button>
+                <button class="btn">Answer 2</button>
+                <button class="btn">Answer 3</button>
+                <button class="btn">Answer 4</button>
+            </div>
+        </div>
+        <div class="controls">
+            <button id="start-btn" class="start-btn btn">Start</button>
+            <button id="next-btn" class="next-btn btn hide">Next</button>
+        </div>
+    </div>
+    <script>
+        const startButton = document.getElementById('start-btn')
+        const nextButton = document.getElementById('next-btn')
+        const questionContainerElement = document.getElementById('question-container')
+        const questionElement = document.getElementById('question')
+        const answerButtonsElement = document.getElementById('answer-buttons')
+
+        let shuffledQuestions, currentQuestionIndex
+
+        startButton.addEventListener('click', startGame)
+        nextButton.addEventListener('click', () => {
+            currentQuestionIndex++
+            setNextQuestion()
+        })
+
+        function startGame() {
+            startButton.classList.add('hide')
+            shuffledQuestions = questions.sort(() => Math.random() - .5)
+            currentQuestionIndex = 0
+            questionContainerElement.classList.remove('hide')
+            setNextQuestion()
+        }
+
+        function setNextQuestion() {
+            resetState()
+            showQuestion(shuffledQuestions[currentQuestionIndex])
+        }
+
+        function showQuestion(question) {
+            questionElement.innerText = question.question
+            question.answers.forEach(answer => {
+                const button = document.createElement('button')
+                button.innerText = answer.text
+                button.classList.add('btn')
+                if (answer.correct) {
+                    button.dataset.correct = answer.correct
+                }
+                button.addEventListener('click', selectAnswer)
+                answerButtonsElement.appendChild(button)
+            })
+        }
+
+        function resetState() {
+            clearStatusClass(document.body)
+            nextButton.classList.add('hide')
+            while (answerButtonsElement.firstChild) {
+                answerButtonsElement.removeChild(answerButtonsElement.firstChild)
+            }
+        }
+
+        function selectAnswer(e) {
+            const selectedButton = e.target
+            const correct = selectedButton.dataset.correct
+            setStatusClass(document.body, correct)
+            Array.from(answerButtonsElement.children).forEach(button => {
+                setStatusClass(button, button.dataset.correct)
+            })
+            if (shuffledQuestions.length > currentQuestionIndex + 1) {
+                nextButton.classList.remove('hide')
+            } else {
+                startButton.innerText = 'Restart'
+                startButton.classList.remove('hide')
+            }
+        }
+
+        function setStatusClass(element, correct) {
+            clearStatusClass(element)
+            if (correct) {
+                element.classList.add('correct')
+            } else {
+                element.classList.add('wrong')
+            }
+        }
+
+        function clearStatusClass(element) {
+            element.classList.remove('correct')
+            element.classList.remove('wrong')
+        }
+
+        // add your questions here marking correct ans as true and wrong ans as false
+        // questions as question: your text
+        // and answers as answers: [you are smart enough to check below]
+        const questions = [
+            {
+                question: 'Which number is greatest among there',
+                answers: [
+                    { text: '750', correct: false },
+                    { text: '59785', correct: true },
+                    { text: '18', correct: false },
+                    { text: '4972', correct: false }
+                ]
+            },
+            {
+                question: 'which number is smaller among these',
+                answers: [
+                    { text: '750', correct: false },
+                    { text: '59785', correct: false },
+                    { text: '18', correct: true },
+                    { text: '4972', correct: false }
+                ]
+            },
+            {
+                question: 'Which number is greatest among these',
+                answers: [
+                    { text: '1473', correct: false },
+                    { text: '89423', correct: true },
+                    { text: '5000', correct: false },
+                    { text: '100', correct: false }
+                ]
+            },
+            {
+                question: 'Which number is smallest among these',
+                answers: [
+                    { text: '1473', correct: false },
+                    { text: '89423', correct: false },
+                    { text: '5000', correct: false },
+                    { text: '100', correct: true }
+                ]
+            },
+            {
+                question: 'Which number is greatest among these',
+                answers: [
+                    { text: '75284', correct: true },
+                    { text: '1834', correct: false },
+                    { text: '2333', correct: false },
+                    { text: '450', correct: false }
+                ]
+            },
+            {
+                question: 'Which number is smallest among these',
+                answers: [
+                    { text: '75284', correct: false },
+                    { text: '1834', correct: false },
+                    { text: '2333', correct: false },
+                    { text: '450', correct: true }
+                ]
+            },
+            {
+                question: 'Which number is greatest among these',
+                answers: [
+                    { text: '12002', correct: true },
+                    { text: '2853', correct: false },
+                    { text: '9999', correct: false },
+                    { text: '124', correct: false }
+                ]
+            },
+            {
+                question: 'Which number is smallest among these',
+                answers: [
+                    { text: '12002', correct: false },
+                    { text: '2853', correct: false },
+                    { text: '9999', correct: false },
+                    { text: '124', correct: true }
+                ]
+            }
+        ]
+    </script>
+</body>
+
+</html>
