@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- change style according to your need -->
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            font-family: Gotham Rounded;
+        }
+
+        :root {
+            --hue-neutral: 200;
+            --hue-wrong: 0;
+            --hue-correct: 145;
+        }
+
+        body {
+            --hue: var(--hue-neutral);
+            padding: 0;
+            margin: 0;
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            background-color: hsl(var(--hue), 100%, 20%);
+        }
+
+        body.correct {
+            --hue: var(--hue-correct);
+        }
+
+        body.wrong {
+            --hue: var(--hue-wrong);
+        }
+
+        .container {
+            width: 800px;
+            max-width: 80%;
+            background-color: white;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 0 10px 2px;
+        }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(2, auto);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .btn {
+            --hue: var(--hue-neutral);
+            border: 1px solid hsl(var(--hue), 100%, 30%);
+            background-color: hsl(var(--hue), 100%, 50%);
+            border-radius: 5px;
+            padding: 5px 10px;
+            color: white;
+            outline: none;
+        }
+
+        .btn:hover {
+            border-color: blue;
+        }
+
+        .btn.correct {
+            --hue: var(--hue-correct);
+            color: green;
+        }
+
+        .btn.wrong {
+            --hue: var(--hue-wrong);
+        }
+
+        .start-btn,
+        .next-btn {
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 10px 20px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hide {
+            display: none;
+        }
+    </style>
+    <title>Quiz App</title>
+</head>
+
+<body>
+    <div class="container">
+        <div id="question-container" class="hide">
+            <div id="question">Question</div>
+            <div id="answer-buttons" class="btn-grid">
+                <button class="btn">Answer 1</button>
+                <button class="btn">Answer 2</button>
+                <button class="btn">Answer 3</button>
+                <button class="btn">Answer 4</button>
+            </div>
+        </div>
+        <div class="controls">
+            <button id="start-btn" class="start-btn btn">Start</button>
+            <button id="next-btn" class="next-btn btn hide">Next</button>
+        </div>
+    </div>
+    <script>
+        const startButton = document.getElementById('start-btn')
+        const nextButton = document.getElementById('next-btn')
+        const questionContainerElement = document.getElementById('question-container')
+        const questionElement = document.getElementById('question')
+        const answerButtonsElement = document.getElementById('answer-buttons')
+
+        let shuffledQuestions, currentQuestionIndex
+
+        startButton.addEventListener('click', startGame)
+        nextButton.addEventListener('click', () => {
+            currentQuestionIndex++
+            setNextQuestion()
+        })
+
+        function startGame() {
+            startButton.classList.add('hide')
+            shuffledQuestions = questions.sort(() => Math.random() - .5)
+            currentQuestionIndex = 0
+            questionContainerElement.classList.remove('hide')
+            setNextQuestion()
+        }
+
+        function setNextQuestion() {
+            resetState()
+            showQuestion(shuffledQuestions[currentQuestionIndex])
+        }
+
+        function showQuestion(question) {
+            questionElement.innerText = question.question
+            question.answers.forEach(answer => {
+                const button = document.createElement('button')
+                button.innerText = answer.text
+                button.classList.add('btn')
+                if (answer.correct) {
+                    button.dataset.correct = answer.correct
+                }
+                button.addEventListener('click', selectAnswer)
+                answerButtonsElement.appendChild(button)
+            })
+        }
+
+        function resetState() {
+            clearStatusClass(document.body)
+            nextButton.classList.add('hide')
+            while (answerButtonsElement.firstChild) {
+                answerButtonsElement.removeChild(answerButtonsElement.firstChild)
+            }
+        }
+
+        function selectAnswer(e) {
+            const selectedButton = e.target
+            const correct = selectedButton.dataset.correct
+            setStatusClass(document.body, correct)
+            Array.from(answerButtonsElement.children).forEach(button => {
+                setStatusClass(button, button.dataset.correct)
+            })
+            if (shuffledQuestions.length > currentQuestionIndex + 1) {
+                nextButton.classList.remove('hide')
+            } else {
+                startButton.innerText = 'Restart'
+                startButton.classList.remove('hide')
+            }
+        }
+
+        function setStatusClass(element, correct) {
+            clearStatusClass(element)
+            if (correct) {
+                element.classList.add('correct')
+            } else {
+                element.classList.add('wrong')
+            }
+        }
+
+        function clearStatusClass(element) {
+            element.classList.remove('correct')
+            element.classList.remove('wrong')
+        }
+
+        // add your questions here marking correct ans as true and wrong ans as false
+        // questions as question: your text
+        // and answers as answers: [you are smart enough to check below]
+        const questions = [
+        {
+                question: 'Algu and Jumman were enemy.',
+                answers: [
+                    { text: 'False', correct: true },
+                    { text: 'True', correct: false }
+                ]
+            },
+            {
+                question: 'Who is the writer of the story?',
+                answers: [
+                    { text: 'A. Ruskin Bond', correct: false },
+                    { text: 'B. Premchand', correct: true },
+                    { text: 'C. Harivanshrai Bacchan', correct: false},
+                    { text: 'D. None', correct: false}
+                ]
+            },
+            {
+                question: "Jumman's aunt traffered her property to Jumman.",
+                answers: [
+                    { text: 'True', correct: true },
+                    { text: 'False', correct: false }
+                ]
+            },
+            {
+                question: "Why Jumman's aunt called the Panchayat?",
+                answers: [
+                    { text: 'A.	she demanded a house but Jumman refused', correct: false },
+                    { text: 'B.	she demanded a monthly allowance but Jumman refused', correct: true },
+                    { text: 'C.	she wanted her property back but Jumman refused', correct: false },
+                    { text: 'D.	None', correct: false }
+                ]
+            },
+            {
+                question: 'Algu took the decision in favor of?',
+                answers: [
+                    { text: 'A.	Old lady', correct: true },
+                    { text: 'B.	Jummman', correct: false },
+                    { text: 'C. Villagers', correct: false },
+                    { text: 'D.	None of the above', correct: false }
+                ]
+            },
+            {
+                question: 'Why Algu supported the old lady?',
+                answers: [
+                    { text: 'A.	Because he was a cheater', correct: false },
+                    { text: "B.	Because he don't wanted to support Jumman", correct: false },
+                    { text: 'C.	None', correct: false },
+                    { text: 'D.	Because a judge have to be just and fair', correct: true }
+                ]
+            },
+            {
+                question: 'To Whom Algu sold his bullock?',
+                answers: [
+                    { text: 'A. Samjhu Sahu', correct: true },
+                    { text: 'B.	Shyam Sahu', correct: false },
+                    { text: 'C.	Both A and B', correct: false },
+                    { text: 'D.	Not A neither B', correct: false }
+                ]
+            },
+            {
+                question: 'Algu sold his bullock as he had a tough time? ',
+                answers: [
+                    { text: 'True', correct: true },
+                    { text: 'False', correct: false }
+                ]
+            },
+            {
+                question: 'To whom Sahu nominated as Panch?',
+                answers: [
+                    { text: 'A.	A village people', correct: false },
+                    { text: 'B.	Jumman', correct: true },
+                    { text: 'C.	Old lady', correct: false },
+                    { text: 'D.	Other', correct: false }
+                ]
+            },
+            {
+                question: 'Jumman took decision in favor of Algu.',
+                answers: [
+                    { text: 'A.	True', correct: true },
+                    { text: 'B.	False', correct: false}
+                ]
+            }
+        ]
+    </script>
+</body>
+
+</html>
