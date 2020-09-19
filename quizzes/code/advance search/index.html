@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>advance search</title>
+    <style>
+        nav {
+            background-color: #f1f1f1;
+            width: 99%;
+            height: 60px;
+            margin-top: -7px;
+            margin-left: -8px;
+            padding: 10px;
+        }
+
+        a {
+            margin-left: 78%;
+            text-decoration: none;
+            color: black;
+        }
+
+        a:hover {
+            text-decoration: underline;
+            color: blue;
+        }
+
+        .green {
+            color: rgb(6, 172, 48);
+        }
+
+        .orange {
+            color: orangered;
+        }
+
+        .blue {
+            color: rgb(39, 112, 221);
+        }
+
+        .yellow {
+            color: rgb(223, 220, 41);
+        }
+
+        .text {
+            font-size: 40px;
+        }
+
+        .container1 {
+            color: rgb(212, 45, 45);
+            margin-left: 33px;
+            border-bottom: 1px solid black;
+        }
+
+        .as {
+            font-size: 25px;
+        }
+
+        .container2 {
+            font-size: 18px;
+            margin-left: 32px;
+
+        }
+
+        .btn {
+            margin-top: 0px;
+            margin-right: 0px;
+
+        }
+
+        .i1 {
+            margin-left: 130px;
+            width: 47%;
+            height: 23px;
+        }
+
+        .i2 {
+            margin-left: 56px;
+            width: 47%;
+            height: 23px;
+        }
+
+        .i3 {
+            margin-left: 100px;
+            width: 47%;
+            height: 23px;
+        }
+
+        .i4 {
+            margin-left: 90px;
+            width: 47%;
+            height: 23px;
+        }
+
+        .btn {
+            background-color: #4d90fe;
+            height: 30px;
+            border-width: 0px;
+            color: white;
+            margin-left: 761px;
+        }
+
+        .btn:hover {
+            background-color: #4479cf;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <span class="container">
+            <span class="blue text">S</span>
+            <span class="orange text">e</span>
+            <span class="yellow text">a</span>
+            <span class="blue text">r</span>
+            <span class="green text">c</span>
+            <span class="orange text">h</span>
+        </span>
+    </nav>
+    <div class="container1">
+        <p class="as">Advance Search</p>
+    </div>
+    <div class="container2">
+        <p style="font-size: 23px;">Find pages with...</p>
+        <form action="https://google.com/search?">
+            all these words: <input class="i1" type="text" name="as_q">
+            <br>
+            <br>
+            this exact word or phrase: <input class="i2" type="text" name="as_epq">
+            <br>
+            <br>
+            any of these words: <input class="i3" type="text" name="as_oq">
+            <br>
+            <br>
+            none of these words: <input class="i4" type="text" name="as_eq">
+            <br>
+            <br>
+            <input class="btn" type="submit" value="Advance search">
+        </form>
+    </div>
+</body>
+
+</html>
